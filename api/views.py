@@ -26,17 +26,16 @@ from rest_framework.views import APIView
 from django.contrib.auth import login
 from django.utils import timezone
 from django.db import transaction
-from reportlab.pdfgen import canvas
 from django.template.loader import get_template
 from django.template import Context
 from django.http import HttpResponse
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
 from django.http import HttpResponse
 from django.template.loader import get_template
-from xhtml2pdf import pisa
 from io import BytesIO
-from django.views.decorators.csrf import csrf_exempt
+from weasyprint import HTML
+from django.http import HttpResponseServerError
+import os
+from pathlib import Path
 
 
 @api_view(['POST'])
@@ -541,32 +540,46 @@ class GetCustomerCoordinates(APIView):
             return Response({'message': 'Location not found for the customer'}, status=status.HTTP_404_NOT_FOUND)
 
 def generate_invoice(order):
-    template_path = 'invoice_template.html'  # Replace with the path to your HTML template
-    template = get_template(template_path)
-    context = {'order': order}
-    html_content = template.render(context)
+    try:
+        # Path to PDF template
+        BASE_DIR = Path(__file__).resolve().parent.parent
+        template_path = os.path.join(BASE_DIR, 'invoice_template.html')
+        template = get_template(template_path)
+        context = {'order': order}
+        # Render the HTML content using the template and context
+        html_content = template.render(context)
 
-    # Create a PDF file
-    buffer = BytesIO()
-    pisa_status = pisa.CreatePDF(html_content, dest=buffer)
+        # Create a PDF file
+        buffer = BytesIO()
 
-    if pisa_status.err:
-        return HttpResponse('Error generating PDF', status=500)
+        # Generate the PDF using weasyprint
+        HTML(string=html_content).write_pdf(target=buffer)
 
-    buffer.seek(0)
-    return buffer
+        buffer.seek(0)
+        return buffer
+
+    except Exception as e:
+        # Log the error or handle it as appropriate for your application
+        print(f"Error generating PDF: {e}")
+        raise
 
 def download_invoice(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
-    # Call the function to generate the invoice
-    pdf_buffer = generate_invoice(order)
+    try:
+        # Call the function to generate the invoice
+        pdf_buffer = generate_invoice(order)
 
-    # File response with correct MIME type
-    response = HttpResponse(pdf_buffer, content_type='application/pdf')
-    response['Content-Disposition'] = f'filename=invoice_of_order_id_{order.id}.pdf'
+        # File response with correct MIME type
+        response = HttpResponse(pdf_buffer, content_type='application/pdf')
+        response['Content-Disposition'] = f'filename=invoice_of_order_id_{order.id}.pdf'
 
-    return response
+        return response
+
+    except Exception as e:
+        # Log the error or handle it as appropriate for your application
+        print(f"Error in download_invoice: {e}")
+        return HttpResponseServerError('Internal Server Error', status=500)
 
 
 class DealOfTheDayView(generics.ListAPIView):
