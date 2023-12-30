@@ -7,19 +7,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.pagination import PageNumberPagination
-from .serializers import (
-    UserSerializer, ProductSerializer, CartItemSerializer, 
-    OrderSummaryCartItemSerializer, OrdersSerializer, 
-    CustomerSerializer, CustomerAddressSerializer, 
-    CustomerLocationSerializer, DealOfTheDaySerializer, 
-    OfferCartItemSerializer
-)
-from .models import (
-    CustomUser, Product, Category, Cart, CartItem, 
-    ProductVariant, CartItem, Customer, Order, 
-    OrderDetails, CustomerAddress, Delivery, 
-    CustomerLocation, DealOfTheDay, OfferCartItem
-)
+from .serializers import UserSerializer, ProductSerializer, CartItemSerializer, OrderSummaryCartItemSerializer, OrdersSerializer, CustomerSerializer, CustomerAddressSerializer, CustomerLocationSerializer, DealOfTheDaySerializer, OfferCartItemSerializer
+from .models import CustomUser, Product, Category, Cart, CartItem, ProductVariant, CartItem, Customer, Order, OrderDetails, CustomerAddress, Delivery, CustomerLocation, DealOfTheDay, OfferCartItem
 from django.http import JsonResponse
 from django.views import View
 from rest_framework.views import APIView
@@ -31,11 +20,12 @@ from django.template import Context
 from django.http import HttpResponse
 from django.http import HttpResponse
 from django.template.loader import get_template
+from xhtml2pdf import pisa
 from io import BytesIO
-from weasyprint import HTML
-from django.http import HttpResponseServerError
-import os
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.response import Response
 from pathlib import Path
+import os
 
 
 @api_view(['POST'])
@@ -540,46 +530,34 @@ class GetCustomerCoordinates(APIView):
             return Response({'message': 'Location not found for the customer'}, status=status.HTTP_404_NOT_FOUND)
 
 def generate_invoice(order):
-    try:
-        # Path to PDF template
-        BASE_DIR = Path(__file__).resolve().parent.parent
-        template_path = os.path.join(BASE_DIR, 'invoice_template.html')
-        template = get_template(template_path)
-        context = {'order': order}
-        # Render the HTML content using the template and context
-        html_content = template.render(context)
 
-        # Create a PDF file
-        buffer = BytesIO()
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    template_path = os.path.join(BASE_DIR, 'invoice_template.html')
+    template = get_template(template_path)
+    context = {'order': order}
+    html_content = template.render(context)
 
-        # Generate the PDF using weasyprint
-        HTML(string=html_content).write_pdf(target=buffer)
+    # Create a PDF file
+    buffer = BytesIO()
+    pisa_status = pisa.CreatePDF(html_content, dest=buffer)
 
-        buffer.seek(0)
-        return buffer
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF', status=500)
 
-    except Exception as e:
-        # Log the error or handle it as appropriate for your application
-        print(f"Error generating PDF: {e}")
-        raise
+    buffer.seek(0)
+    return buffer
 
 def download_invoice(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
-    try:
-        # Call the function to generate the invoice
-        pdf_buffer = generate_invoice(order)
+    # Call the function to generate the invoice
+    pdf_buffer = generate_invoice(order)
 
-        # File response with correct MIME type
-        response = HttpResponse(pdf_buffer, content_type='application/pdf')
-        response['Content-Disposition'] = f'filename=invoice_of_order_id_{order.id}.pdf'
+    # File response with correct MIME type
+    response = HttpResponse(pdf_buffer, content_type='application/pdf')
+    response['Content-Disposition'] = f'filename=invoice_of_order_id_{order.id}.pdf'
 
-        return response
-
-    except Exception as e:
-        # Log the error or handle it as appropriate for your application
-        print(f"Error in download_invoice: {e}")
-        return HttpResponseServerError('Internal Server Error', status=500)
+    return response
 
 
 class DealOfTheDayView(generics.ListAPIView):
@@ -650,6 +628,4 @@ def update_offer_cart_items(request):
     print(free_items_serializer.data, "free items ----------------------------------------------------------------")
 
     return Response({'message': 'OfferCartItems updated successfully', 'free_items': free_items_serializer.data}, status=status.HTTP_200_OK)
-
-
 
