@@ -48,11 +48,21 @@ const RegisterCard = () => {
       password: password1,
     };
 
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+    
+
     try {
+
+      const csrftoken = getCookie('csrftoken');
       const response = await fetch('/api/register/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken,
         },
         body: JSON.stringify(registrationData),
       });

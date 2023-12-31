@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
 
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
 ]
 
@@ -88,8 +89,12 @@ WSGI_APPLICATION = 'marketapp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'gGb121Gb45-2fa5-6Ebeg31bgfe6CdcA',
+        'HOST': 'viaduct.proxy.rlwy.net',
+        'PORT': '19087',
     }
 }
 

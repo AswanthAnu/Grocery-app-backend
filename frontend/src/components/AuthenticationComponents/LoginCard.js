@@ -19,25 +19,37 @@ const LoginCard = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false); // Use snackbarOpen state
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
+
+  
+
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+  
   const handleLogin = async () => {
     try {
+      const csrftoken = getCookie('csrftoken');
+      console.log(csrftoken, 'csrf token')
       const response = await fetch('/api/login/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken,
         },
         body: JSON.stringify({ username, password }),
       });
   
       if (response.ok) {
         const data = await response.json();
-        console.log(data.token, 'token returned')
+        console.log(data.token, 'token returned');
         localStorage.setItem('token', data.token);
         setSnackbarMessage('Logged in successfully');
-        setSnackbarOpen(true); 
+        setSnackbarOpen(true);
         window.location.href = '/';
       } else {
-        const errorMessage = await response.text(); 
+        const errorMessage = await response.text();
         setError(true);
         console.error('Error during login:', errorMessage);
       }
@@ -46,6 +58,7 @@ const LoginCard = () => {
       console.error('Error during login:', error);
     }
   };
+  
   
 
   return (

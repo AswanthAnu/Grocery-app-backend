@@ -2,7 +2,8 @@ from rest_framework import status, generics, filters, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authtoken.models import Token
-from django.contrib.auth import authenticate
+
+from django.contrib.auth import authenticate, login
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
@@ -12,7 +13,6 @@ from .models import CustomUser, Product, Category, Cart, CartItem, ProductVarian
 from django.http import JsonResponse
 from django.views import View
 from rest_framework.views import APIView
-from django.contrib.auth import login
 from django.utils import timezone
 from django.db import transaction
 from django.template.loader import get_template
@@ -26,6 +26,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
 from pathlib import Path
 import os
+
 
 
 @api_view(['POST'])

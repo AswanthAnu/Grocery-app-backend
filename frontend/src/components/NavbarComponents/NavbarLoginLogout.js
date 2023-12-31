@@ -31,10 +31,10 @@ const NavbarLoginLogout = ({}) => {
         setSnackbarOpen(true);
         window.location.href = '/login';
       } else {
-        console.error('Logout error:', response.statusText);
+        console.error('Logout error 1:', response.statusText);
       }
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('Logout error 2:', error);
     }
   };
   const handleSnackbarClose = () => {
