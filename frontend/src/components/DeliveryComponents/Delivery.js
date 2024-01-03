@@ -16,7 +16,6 @@ const Delivery = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const apiUrl = `/api/delivery/?page=${currentPage}`

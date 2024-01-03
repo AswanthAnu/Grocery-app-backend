@@ -1,27 +1,17 @@
-import React from 'react'
-import { 
-    Stack,
-    Typography,
-    List,
-    ListItem,
-    ListItemText
-} from '@mui/material';
-import { makeStyles } from "@material-ui/core/styles";
+import React from 'react';
+import { Stack, Typography, List, ListItem, ListItemText } from '@mui/material';
+import { styled } from '@mui/system';
 
-const useStyles = makeStyles((theme) => ({
-    keyTypography: {
-      width: "150px",  
-      color: theme.palette.grey[700],
-    },
-    valueTypography: {
-      flex: 1,
-    },
-}));
+const KeyTypography = styled(Typography)({
+  width: '150px',
+  color: (theme) => theme.palette.grey[700],
+});
 
-const UserDetails = ({order}) => {
+const ValueTypography = styled(Typography)({
+  flex: 1,
+});
 
-    const classes = useStyles();
-
+const UserDetails = ({ order }) => {
   return (
     <List disablePadding>
       <Typography variant="h6" gutterBottom>
@@ -31,10 +21,8 @@ const UserDetails = ({order}) => {
         <ListItemText
           primary={
             <Stack direction="row">
-              <Typography className={classes.keyTypography}>Name:</Typography>
-              <Typography className={classes.valueTypography}>
-                {`${order.customer.first_name} ${order.customer.last_name}`}
-              </Typography>
+              <KeyTypography>Name:</KeyTypography>
+              <ValueTypography>{`${order.customer.first_name} ${order.customer.last_name}`}</ValueTypography>
             </Stack>
           }
         />
@@ -43,12 +31,8 @@ const UserDetails = ({order}) => {
         <ListItemText
           primary={
             <Stack direction="row">
-              <Typography className={classes.keyTypography}>
-                Address line 1:
-              </Typography>
-              <Typography className={classes.valueTypography}>
-                {order.customer.address_line1}
-              </Typography>
+              <KeyTypography>Address line 1:</KeyTypography>
+              <ValueTypography>{order.customer.address_line1}</ValueTypography>
             </Stack>
           }
         />
@@ -57,12 +41,8 @@ const UserDetails = ({order}) => {
         <ListItemText
           primary={
             <Stack direction="row">
-              <Typography className={classes.keyTypography}>
-                Address line 2:
-              </Typography>
-              <Typography className={classes.valueTypography}>
-                {order.customer.address_line2}
-              </Typography>
+              <KeyTypography>Address line 2:</KeyTypography>
+              <ValueTypography>{order.customer.address_line2}</ValueTypography>
             </Stack>
           }
         />
@@ -71,12 +51,8 @@ const UserDetails = ({order}) => {
         <ListItemText
           primary={
             <Stack direction="row">
-              <Typography className={classes.keyTypography}>
-                Phone number:
-              </Typography>
-              <Typography className={classes.valueTypography}>
-                {order.customer.phone_number}
-              </Typography>
+              <KeyTypography>Phone number:</KeyTypography>
+              <ValueTypography>{order.customer.phone_number}</ValueTypography>
             </Stack>
           }
         />
@@ -85,10 +61,8 @@ const UserDetails = ({order}) => {
         <ListItemText
           primary={
             <Stack direction="row">
-              <Typography className={classes.keyTypography}>Street:</Typography>
-              <Typography className={classes.valueTypography}>
-                {order.customer.street_address}
-              </Typography>
+              <KeyTypography>Street:</KeyTypography>
+              <ValueTypography>{order.customer.street_address}</ValueTypography>
             </Stack>
           }
         />
@@ -97,10 +71,8 @@ const UserDetails = ({order}) => {
         <ListItemText
           primary={
             <Stack direction="row">
-              <Typography className={classes.keyTypography}>City:</Typography>
-              <Typography className={classes.valueTypography}>
-                {order.customer.city}
-              </Typography>
+              <KeyTypography>City:</KeyTypography>
+              <ValueTypography>{order.customer.city}</ValueTypography>
             </Stack>
           }
         />
@@ -109,16 +81,14 @@ const UserDetails = ({order}) => {
         <ListItemText
           primary={
             <Stack direction="row">
-              <Typography className={classes.keyTypography}>Zipcode:</Typography>
-              <Typography className={classes.valueTypography}>
-                {order.customer.pincode}
-              </Typography>
+              <KeyTypography>Zipcode:</KeyTypography>
+              <ValueTypography>{order.customer.pincode}</ValueTypography>
             </Stack>
           }
         />
       </ListItem>
     </List>
-  )
-}
+  );
+};
 
-export default UserDetails
+export default UserDetails;

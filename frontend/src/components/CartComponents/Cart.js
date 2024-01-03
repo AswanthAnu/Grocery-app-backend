@@ -13,7 +13,6 @@ import CartItemsCard from './CartItemsCard'
 import OrderSummaryCard from './OrderSummaryCard'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import OfferBanner from '../HomePageComponents/OfferBanner';
-import OfferCartItemsCard from './OfferCartItemsCard';
 
 const Cart = () => {
 
@@ -22,7 +21,6 @@ const Cart = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [offerProduct, setOfferProduct] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -91,7 +89,6 @@ const Cart = () => {
         }
   
         const offerData = await response.json();
-        setOfferProduct(offerData.free_items)
       } catch (error) {
         console.error('Error fetching offer data: ', error);
       }

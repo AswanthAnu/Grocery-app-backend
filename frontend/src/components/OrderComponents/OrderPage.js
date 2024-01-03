@@ -11,7 +11,7 @@ import {
   Grid,
   Pagination
 } from '@mui/material'
-import { ExpandMore } from '@material-ui/icons';
+import { FaAngleDown } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import OrderAccordianSummary from './OrderAccordianSummary';
 import OrderAccordianDetails from './OrderAccordianDetails';
@@ -101,7 +101,7 @@ const OrdersPage = () => {
             {orders.map((order, index)=>(
             <Accordion expanded={expandedPanel === 'panel' + index } onChange={handleAccordionChange('panel' + index)}>
 
-              <AccordionSummary  expandIcon={<ExpandMore />}>
+              <AccordionSummary  expandIcon={<FaAngleDown />}>
                 <OrderAccordianSummary order={order}/>
               </AccordionSummary>
 

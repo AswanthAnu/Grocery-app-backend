@@ -55,7 +55,7 @@ const OfferBanner = () => {
             {offers.length > 0 && (
             <img
                 src={offers[currentImageIndex].image}
-                alt="Offer Image"
+                alt=""
                 style={{
                 width: '100%', // Set width to 100% of the container
                 height: '150px', // Set height to 100% of the container

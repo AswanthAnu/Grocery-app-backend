@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
-import { Chip, IconButton, useMediaQuery, ThemeProvider } from '@mui/material';
+import { Chip, IconButton, useTheme } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { createTheme } from '@mui/material/styles'; 
 
-const CategoryChip = ({ items, setCurrentCategory, onSearch, }) => {
+const CategoryChip = ({ items, setCurrentCategory, onSearch }) => {
   const [startIndex, setStartIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
 
-  const theme = createTheme();
+  const theme = useTheme();
 
-  const isXs = useMediaQuery(theme.breakpoints.down('xs'));
-  const isMd = useMediaQuery(theme.breakpoints.down('md'));
+  const isXs = theme.breakpoints.down('xs');
+  const isMd = theme.breakpoints.down('md');
 
-  const visibleItems = isXs ? 2 : (isMd ? 2 : 10); // Display 10 items at a time
+  const visibleItems = isXs ? 2 : isMd ? 2 : 10; // Display 10 items at a time
   const chipWidth = 150; // Set a fixed width for the chips
 
   const handleScroll = (scrollOffset) => {
@@ -28,19 +26,18 @@ const CategoryChip = ({ items, setCurrentCategory, onSearch, }) => {
   const handleClick = async (index) => {
     try {
       const response = await fetch(`/api/products/category/${items[startIndex + index]}/?page=${currentPage}`);
-      
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
 
       const data = await response.json();
       onSearch(data);
-      
     } catch (error) {
       console.error('Error searching categories: ', error);
     }
     console.log(`Clicked on ${items[startIndex + index]}`);
-    setCurrentCategory(items[startIndex + index])
+    setCurrentCategory(items[startIndex + index]);
   };
 
   return (

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Stack, Snackbar, Alert } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-const NavbarLoginLogout = ({}) => {
+const NavbarLoginLogout = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -13,7 +13,7 @@ const NavbarLoginLogout = ({}) => {
   }, []);
 
   const handleLogout = async () => {
-    console.log(localStorage.getItem('token'), 'token-1')
+    console.log(localStorage.getItem('token'), 'token-1');
     try {
       const response = await fetch('/api/logout/', {
         method: 'POST',
@@ -24,7 +24,7 @@ const NavbarLoginLogout = ({}) => {
       });
 
       if (response.ok) {
-        console.log("good response", response)
+        console.log('good response', response);
         localStorage.removeItem('token');
         setIsAuthenticated(false);
         setSnackbarMessage('Logged out successfully');
@@ -37,6 +37,7 @@ const NavbarLoginLogout = ({}) => {
       console.error('Logout error 2:', error);
     }
   };
+
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
@@ -52,11 +53,11 @@ const NavbarLoginLogout = ({}) => {
           Login
         </Button>
       )}
-       <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
-            <Alert severity="success" onClose={handleSnackbarClose}>
-                {snackbarMessage}
-            </Alert>
-        </Snackbar>
+      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+        <Alert severity="success" onClose={handleSnackbarClose}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Stack>
   );
 };

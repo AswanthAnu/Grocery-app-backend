@@ -5,8 +5,7 @@ import {
     TableHead,
     TableBody,
     TableRow,
-    TableCell,
-    Paper
+    TableCell
 } from '@mui/material'
 
 const ProductDetailTable = ({orderItems}) => {

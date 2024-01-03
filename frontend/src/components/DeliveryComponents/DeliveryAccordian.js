@@ -1,34 +1,31 @@
-import React, { useState } from 'react'
-import { 
-    Stack,
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
-    Box,
-    Typography,
-    Button    
+import React, { useState } from 'react';
+import {
+  Stack,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Box,
+  Typography,
+  Button,
 } from '@mui/material'
-import { ExpandMore } from '@material-ui/icons';
+import { ExpandMore } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import DeliveryAccordionDetails from './DeliveryAccordionDetails';
 import DeliveryAccordionSummary from './DeliveryAccordionSummary';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
+const PendingAccordion = ({ orders, setOrders }) => {
+  const [expandedPanel, setExpandedPanel] = useState(false);
+  const navigate = useNavigate();
 
+  const handleAccordionChange = (panel) => (event, isExpanded) => {
+    console.log({ event, isExpanded });
+    setExpandedPanel(isExpanded ? panel : false);
+  };
 
-const PendingAccordian = ({orders, setOrders}) => {
-
-    const [expandedPanel, setExpandedPanel] = useState(false);
-    const navigate = useNavigate();
-
-    const handleAccordionChange = (panel) => (event, isExpanded) => {
-        console.log({ event, isExpanded });
-        setExpandedPanel(isExpanded ? panel : false);
-    };
-
-    const handleBackHome = () => {
-      navigate('/');
-    }
+  const handleBackHome = () => {
+    navigate('/');
+  };
 
   return (
     <>
@@ -42,9 +39,7 @@ const PendingAccordian = ({orders, setOrders}) => {
             minHeight: '60vh',
           }}
         >
-          <ShoppingCartIcon
-            sx={{ fontSize: '64px', color: 'gray' }}
-          />
+          <ShoppingCartIcon sx={{ fontSize: '64px', color: 'gray' }} />
           <Typography variant="h6" color="textSecondary">
             It is empty. Nothing delivered yet.
           </Typography>
@@ -59,23 +54,24 @@ const PendingAccordian = ({orders, setOrders}) => {
         </Box>
       ) : (
         <Stack spacing={2}>
-          {orders.map((order, index)=>(
-            <Accordion expanded={expandedPanel === 'panel' + index } onChange={handleAccordionChange('panel' + index)}>
-    
-              <AccordionSummary  expandIcon={<ExpandMore />}>
+          {orders.map((order, index) => (
+            <Accordion
+              expanded={expandedPanel === 'panel' + index}
+              onChange={handleAccordionChange('panel' + index)}
+              key={'panel' + index}
+            >
+              <AccordionSummary expandIcon={<ExpandMore />}>
                 <DeliveryAccordionSummary order={order} />
               </AccordionSummary>
-    
               <AccordionDetails>
-                <DeliveryAccordionDetails order={order} setOrders={setOrders}/>
+                <DeliveryAccordionDetails order={order} setOrders={setOrders} />
               </AccordionDetails>
-    
             </Accordion>
           ))}
         </Stack>
       )}
     </>
-  )
-}
+  );
+};
 
-export default PendingAccordian
+export default PendingAccordion;

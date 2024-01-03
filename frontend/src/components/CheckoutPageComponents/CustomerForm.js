@@ -10,11 +10,9 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  DialogActions, 
-  CircularProgress,
+  DialogActions,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { geolocated } from 'react-geolocated';
 
 const CustomerForm = ({ cartitems }) => {
   const [formData, setFormData] = useState({

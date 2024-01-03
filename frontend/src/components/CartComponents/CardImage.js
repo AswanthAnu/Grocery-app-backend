@@ -1,6 +1,5 @@
 import React from 'react'
 import { 
-    Stack, 
     CardMedia 
 } from '@mui/material'
 

@@ -42,54 +42,50 @@ const HomePageContent = () => {
   
 
 
-  const handleClick = async () => {
-    try {
-      const response = await fetch(`/api/products/category/${currentCategory}/?page=${currentPage}`);
-    
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-    
-      const data = await response.json();
-      handleSearch(data);
-    
-    } catch (error) {
-      console.error('Error searching categories: ', error);
-    }
-  }
-
-
   useEffect(() => {
 
-    if (!currentCategory){
-      const apiUrl = `/api/products/?page=${currentPage}`
-      
-      fetch(apiUrl).then((response) => response.json()).then((data) => {
-        setLoading(true);
-        setProducts(data.products)
-        setTotalPages((prevTotalPages) => Math.ceil(data.total_products / 16));
-        const initialVariants = data.products.map((product) => product.variants[0]?.id || '');
+    const handleClick = async () => {
+      try {
+        const response = await fetch(`/api/products/category/${currentCategory}/?page=${currentPage}`);
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        handleSearch(data);
+      } catch (error) {
+        console.error('Error searching categories: ', error);
+      }
+    };
+
+    if (!currentCategory) {
+      const apiUrl = `/api/products/?page=${currentPage}`;
+
+      fetch(apiUrl)
+        .then((response) => response.json())
+        .then((data) => {
+          setLoading(true);
+          setProducts(data.products);
+          setTotalPages((prevTotalPages) => Math.ceil(data.total_products / 16));
+          const initialVariants = data.products.map((product) => product.variants[0]?.id || '');
           setSelectedVariants(initialVariants);
 
-        const allCategories = data.products.flatMap((product) =>
-          product.category
-          );
+          const allCategories = data.products.flatMap((product) => product.category);
           const uniqueCategories = [...new Set(allCategories)];
           setUniqueCategories(uniqueCategories);
-          
+
           setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching data: ', error)
-        setMessage("Products not available!");
-        setDialogOpen(true);
-      })
+        })
+        .catch((error) => {
+          console.error('Error fetching data: ', error);
+          setMessage('Products not available!');
+          setDialogOpen(true);
+        });
+    } else if (currentCategory) {
+      handleClick();
     }
-    else if (currentCategory){
-      handleClick()
-      
-    }
-  }, [currentPage])
+  }, [currentPage, currentCategory]);
 
 
 
